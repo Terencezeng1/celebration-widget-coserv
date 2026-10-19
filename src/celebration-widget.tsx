@@ -196,8 +196,28 @@ export const CelebrationWidget = ({
     },
   };
 
+  // Tolerate values entered with or without a leading '#'
+  const headerColorHex =
+    "#" + (headercolor ? String(headercolor).replace(/^#/, "") : "000000");
+
+  // Explicit typography so classic pages and the new Content Designer render identically
   const h2styles: { [key: string]: React.CSSProperties } = {
-    container: { color: "#" + (headercolor ? headercolor : "000000") },
+    container: {
+      color: headerColorHex,
+      fontSize: "24px",
+      fontWeight: 700,
+      lineHeight: 1.3,
+      margin: "0 0 10px 0",
+    },
+  };
+  const groupheaderstyles: { [key: string]: React.CSSProperties } = {
+    container: {
+      color: headerColorHex,
+      fontSize: "18px",
+      fontWeight: 600,
+      lineHeight: 1.3,
+      margin: "14px 0 6px 0",
+    },
   };
   const divstyles: { [key: string]: React.CSSProperties } = {
     container: {
@@ -417,7 +437,7 @@ export const CelebrationWidget = ({
         htmlList.push(
           <h2
             key={groupCondition}
-            style={hrstyles.container}
+            style={groupheaderstyles.container}
             className="cw-group-condition-title"
           >
             {groupHeaderText}
