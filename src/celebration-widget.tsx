@@ -225,10 +225,20 @@ export const CelebrationWidget = ({
       border: "1px solid #D3D3D3",
       padding: "8px",
       margin: "10px 0px",
+      boxSizing: "border-box",
+      width: "100%",
+    },
+  };
+  const astyles: { [key: string]: React.CSSProperties } = {
+    container: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+      width: "100%",
     },
   };
   const pstyles: { [key: string]: React.CSSProperties } = {
-    container: { display: "inline-block", marginTop: "0", color: "#000000" },
+    container: { marginTop: "0", color: "#000000", minWidth: 0 },
   };
   const hrstyles: { [key: string]: React.CSSProperties } = {
     container: { margin: "0" },
@@ -463,6 +473,7 @@ export const CelebrationWidget = ({
                 key={theUser.id + "a"}
                 href={userLink}
                 className="link-internal ally-focus-within"
+                style={astyles.container}
               >
                 {hasAvatar ? (
                   <img
@@ -498,7 +509,9 @@ export const CelebrationWidget = ({
                   <div style={namestyles.container}>
                     {theUser.firstName} {theUser.lastName}
                   </div>
-                  <hr style={hrstyles.container}></hr>
+                  <hr
+                    style={{ display: "none", margin: "0" }}
+                  ></hr>
                   <span style={datestyles.container}>
                     {(() => {
                       if (!theUser.profile) return "";

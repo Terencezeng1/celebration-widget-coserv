@@ -118,13 +118,13 @@ const factory: BlockFactory = (BaseBlockClass, _widgetApi) => {
  * The definition of the block, to let it successful register to the hosting application
  */
 const blockDefinition: BlockDefinition = {
-  name: "celebration-widget-two",
+  name: "coserv-celebration-widget",
   factory: factory,
   attributes: widgetAttributes,
   blockLevel: "block",
   configurationSchema: configurationSchema,
   uiSchema: uiSchema,
-  label: "Celebration Widget 2",
+  label: "Coserv Celebration Widget",
   iconUrl:
     "https://cc-scripts.staffbase.com/celebration-widget/celebration.png",
 };

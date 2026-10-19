@@ -19,7 +19,7 @@ import "webpack-dev-server";
 
 const config: webpack.Configuration = merge(common, {
   entry: {
-    "sb-custom.celebration-widget2": "./src/dev.ts",
+    "sb-custom.coserv-celebration-widget": "./src/dev.ts",
     config: "./dev/config.tsx",
     bootstrap: "./dev/bootstrap.ts",
   },

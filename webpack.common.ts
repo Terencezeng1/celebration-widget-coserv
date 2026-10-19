@@ -15,7 +15,7 @@ import * as webpack from "webpack";
 
 const config: webpack.Configuration = {
   entry: {
-    "sb-custom.celebration-widget2": "./src/index.tsx",
+    "sb-custom.coserv-celebration-widget": "./src/index.tsx",
   },
   module: {
     rules: [
