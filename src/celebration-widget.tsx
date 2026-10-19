@@ -43,6 +43,8 @@ export interface CelebrationWidgetProps extends BlockAttributes {
   optoutgroupid: string;
   includeyear: boolean;
   splitbyyearreverse: boolean;
+  showtenure: boolean;
+  autofitheight: boolean;
   daysbeforetitle: string;
   daysaftertitle: string;
   groupid: string;
@@ -75,6 +77,8 @@ export const CelebrationWidget = ({
   showdaysafter,
   splitbyyear,
   splitbyyearreverse,
+  showtenure,
+  autofitheight,
   specialyears,
   hideyearheader,
   linktochat,
@@ -132,6 +136,23 @@ export const CelebrationWidget = ({
       month: "long",
       day: "numeric",
     });
+  };
+
+  // Years of service: current year minus the 4-digit year found in the stored value.
+  // Returns null when the value has no year (e.g. birthday fields like "09/16").
+  const getTenureYears = (profileDate: string): number | null => {
+    const hireYearStr = profileDate
+      .split(/[./ -]+/)
+      .find((p) => p.length === 4);
+    if (!hireYearStr) return null;
+    const years = new Date().getFullYear() - parseInt(hireYearStr);
+    return years >= 0 ? years : null;
+  };
+
+  const tenureLabel = (years: number): string => {
+    const word =
+      years === 1 ? yearword || "year" : yearwordplural || "years";
+    return years + " " + word;
   };
 
   let usersByGroupCondition = {},
@@ -334,7 +355,7 @@ export const CelebrationWidget = ({
         return arr;
       }, {});
 
-      if (specialyears !== undefined) {
+      if (specialyears !== undefined && specialyears.trim() !== "") {
         const specialyearsarr = specialyears.split(",");
         usersByGroupCondition = Object.keys(usersByGroupCondition)
           .filter((yearCount) => specialyearsarr.includes(yearCount))
@@ -376,12 +397,22 @@ export const CelebrationWidget = ({
     for (const groupCondition of groupKeys) {
       const usersGroup = usersByGroupCondition[groupCondition];
       if (limit !== undefined) if (anniversariesCount >= limit) break;
+      const groupHeaderText =
+        groupCondition === "1-today"
+          ? todaytitle
+          : groupCondition === "2-upcoming"
+            ? daysaftertitle
+            : groupCondition === "0-previous"
+              ? daysbeforetitle
+              : groupCondition +
+                " " +
+                (parseInt(groupCondition) > 1
+                  ? yearwordplural || "years"
+                  : yearword || "year");
       if (
-        (includeyear === "true" ||
-          includeyear === true ||
-          daysaftertitle !== undefined ||
-          daysbeforetitle !== undefined) &&
-        hideyearheader === "false"
+        String(hideyearheader) !== "true" &&
+        groupHeaderText !== undefined &&
+        String(groupHeaderText).trim() !== ""
       ) {
         htmlList.push(
           <h2
@@ -389,15 +420,7 @@ export const CelebrationWidget = ({
             style={hrstyles.container}
             className="cw-group-condition-title"
           >
-            {groupCondition === "1-today"
-              ? todaytitle
-              : groupCondition === "2-upcoming"
-                ? daysaftertitle
-                : groupCondition === "0-previous"
-                  ? daysbeforetitle
-                  : groupCondition +
-                    " " +
-                    (parseInt(groupCondition) > 1 ? yearwordplural : yearword)}
+            {groupHeaderText}
           </h2>,
         );
       }
@@ -457,14 +480,26 @@ export const CelebrationWidget = ({
                   </div>
                   <hr style={hrstyles.container}></hr>
                   <span style={datestyles.container}>
-                    {showdate === "true" || showdate === true
-                      ? theUser.profile
-                        ? convertDate(
-                            theUser.profile[anniversaryprofilefieldid],
-                            dateformat,
-                          )
-                        : ""
-                      : ""}
+                    {(() => {
+                      if (!theUser.profile) return "";
+                      const profileDate =
+                        theUser.profile[anniversaryprofilefieldid];
+                      const showDateOn =
+                        showdate === "true" || showdate === true;
+                      const showTenureOn =
+                        showtenure === "true" || showtenure === true;
+                      const datePart = showDateOn
+                        ? convertDate(profileDate, dateformat)
+                        : "";
+                      const years = showTenureOn
+                        ? getTenureYears(profileDate)
+                        : null;
+                      const tenurePart =
+                        years !== null && years > 0 ? tenureLabel(years) : "";
+                      return datePart && tenurePart
+                        ? datePart + " \u2013 " + tenurePart
+                        : datePart || tenurePart;
+                    })()}
                   </span>
                 </div>
               </a>
@@ -496,6 +531,10 @@ export const CelebrationWidget = ({
     container: { display: "none" },
   };
 
+  const autoFitOn = autofitheight === "true" || autofitheight === true;
+  const useFixedHeight =
+    !autoFitOn && numbertoshow !== undefined && numbertoshow !== "";
+
   if (hideemptywidget === "true" && filteredUsers.length <= 0) {
     return (
       <div
@@ -508,9 +547,7 @@ export const CelebrationWidget = ({
       <div
         id={"cw-" + anniversaryprofilefieldid}
         style={
-          numbertoshow !== undefined && numbertoshow !== ""
-            ? outerstyles.container
-            : outerstylesfull.container
+          useFixedHeight ? outerstyles.container : outerstylesfull.container
         }
       >
         <h1 id="cw-title" style={h2styles.container}>
@@ -520,9 +557,11 @@ export const CelebrationWidget = ({
           id="cw-list-container"
           key="userList"
           style={
-            numbertoshow !== undefined && numbertoshow !== ""
+            useFixedHeight
               ? contentstyles.container
-              : contentstylesfull.container
+              : autoFitOn
+                ? { overflow: "visible" }
+                : contentstylesfull.container
           }
         >
           {htmlList}

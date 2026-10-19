@@ -83,13 +83,35 @@ export const configurationSchema: JSONSchema7 = {
     },
     showdaysbefore: {
       type: "number",
-      title: "Number of Days Before Celebrations",
+      title: "Number of Previous Days to Display",
       default: 0,
     },
     showdaysafter: {
       type: "number",
-      title: "Number of Days After Celebrations",
+      title: "Number of Upcoming Days to Display",
       default: 30,
+    },
+    todaytitle: {
+      type: "string",
+      title: "Text for today's celebrations",
+    },
+    daysbeforetitle: {
+      type: "string",
+      title: "Text for past celebrations",
+    },
+    daysaftertitle: {
+      type: "string",
+      title: "Text for upcoming celebrations",
+    },
+    showtenure: {
+      type: "boolean",
+      title: "Show Years of Service",
+      default: false,
+    },
+    autofitheight: {
+      type: "boolean",
+      title: "Fit all entries without scrolling",
+      default: false,
     },
     specialyears: {
       type: "string",
@@ -156,7 +178,28 @@ export const uiSchema: UiSchema = {
     "ui:hidden": true,
   },
   title: {
-    "ui:help": "The title of the widget",
+    "ui:help":
+      "Displayed as the widget heading. Also used to tell widget instances apart in the page editor.",
+  },
+  todaytitle: {
+    "ui:help":
+      "Header shown above users whose celebration is today. Leave empty to hide the header.",
+  },
+  daysbeforetitle: {
+    "ui:help":
+      "Header shown above users whose celebration already passed. Leave empty to hide the header.",
+  },
+  daysaftertitle: {
+    "ui:help":
+      "Header shown above users whose celebration is coming up. Leave empty to hide the header.",
+  },
+  showtenure: {
+    "ui:help":
+      "Shows years of service instead of the raw year, e.g. 'October 5 – 5 years'. Uses Year Word / Year Word Plural if set.",
+  },
+  autofitheight: {
+    "ui:help":
+      "If enabled, the widget grows to fit all entries — no inner scrollbar. Overrides Height (px).",
   },
   loadingmessage: {
     "ui:help":
@@ -215,8 +258,8 @@ export const uiSchema: UiSchema = {
       "Show longest tenure (highest years) first, requires activating split by year alongside",
   },
   numbertoshow: {
-    "ui: help":
-      "Enter the height of the widget (in pixels) Each profile is approximately 80 px. If left blank, all profiles will be shown.",
+    "ui:help":
+      "Enter the height of the widget (in pixels). Each profile is approximately 80 px. If left blank, all profiles will be shown. Ignored when 'Fit all entries without scrolling' is enabled.",
   },
   optoutfield: {
     "ui:help": "Profile Field ID for Opt Out Field",
