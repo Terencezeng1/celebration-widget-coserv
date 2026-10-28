@@ -45,6 +45,7 @@ export interface CelebrationWidgetProps extends BlockAttributes {
   splitbyyearreverse: boolean;
   showtenure: boolean;
   autofitheight: boolean;
+  todaysfirst: boolean;
   daysbeforetitle: string;
   daysaftertitle: string;
   groupid: string;
@@ -79,6 +80,7 @@ export const CelebrationWidget = ({
   splitbyyearreverse,
   showtenure,
   autofitheight,
+  todaysfirst,
   specialyears,
   hideyearheader,
   linktochat,
@@ -418,6 +420,14 @@ export const CelebrationWidget = ({
       (splitbyyearreverse === true || splitbyyearreverse === "true")
     ) {
       groupKeys.sort((a, b) => parseInt(b) - parseInt(a));
+    } else if (todaysfirst === "true" || todaysfirst === true) {
+      // today -> upcoming -> previous
+      const order = { "1-today": 0, "2-upcoming": 1, "0-previous": 2 };
+      groupKeys.sort((a, b) =>
+        isNaN(parseInt(a))
+          ? (order[a] ?? 99) - (order[b] ?? 99)
+          : parseInt(a) - parseInt(b),
+      );
     } else {
       groupKeys.sort((a, b) =>
         isNaN(parseInt(a)) ? a.localeCompare(b) : parseInt(a) - parseInt(b),
