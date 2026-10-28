@@ -57,6 +57,7 @@ const widgetAttributes: string[] = [
   "splitbyyearreverse", // ADDED: Critical for saving state
   "showtenure", // must be listed here or the editor won't save it
   "autofitheight", // must be listed here or the editor won't save it
+  "todaysfirst", // must be listed here or the editor won't save it
   "daysbeforetitle",
   "daysaftertitle",
   "networkid",
