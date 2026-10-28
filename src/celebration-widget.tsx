@@ -423,11 +423,9 @@ export const CelebrationWidget = ({
     } else if (todaysfirst === "true" || todaysfirst === true) {
       // today -> upcoming -> previous
       const order = { "1-today": 0, "2-upcoming": 1, "0-previous": 2 };
-      groupKeys.sort((a, b) =>
-        isNaN(parseInt(a))
-          ? (order[a] ?? 99) - (order[b] ?? 99)
-          : parseInt(a) - parseInt(b),
-      );
+      const rank = (k: string) =>
+        order[k] !== undefined ? order[k] : 100 + (parseInt(k) || 0);
+      groupKeys.sort((a, b) => rank(a) - rank(b));
     } else {
       groupKeys.sort((a, b) =>
         isNaN(parseInt(a)) ? a.localeCompare(b) : parseInt(a) - parseInt(b),
