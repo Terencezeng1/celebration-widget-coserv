@@ -113,6 +113,11 @@ export const configurationSchema: JSONSchema7 = {
       title: "Fit all entries without scrolling",
       default: false,
     },
+    todaysfirst: {
+      type: "boolean",
+      title: "Show today's celebrations first",
+      default: false,
+    },
     specialyears: {
       type: "string",
       title: "Special Years",
@@ -200,6 +205,10 @@ export const uiSchema: UiSchema = {
   autofitheight: {
     "ui:help":
       "If enabled, the widget grows to fit all entries — no inner scrollbar. Overrides Height (px).",
+  },
+  todaysfirst: {
+    "ui:help":
+      "If enabled, groups are ordered: today's celebrations first, then upcoming, then previous. Otherwise previous come first.",
   },
   loadingmessage: {
     "ui:help":
